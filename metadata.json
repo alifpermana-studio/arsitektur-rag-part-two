@@ -1,0 +1,5 @@
+{
+  "name": "Masterclass RAG Bagian 2 — Bedah Topologi Docker dan Budgeting RAM — Menjalankan 5 Layanan RAG di VPS 4 GB Tanpa Out of Memory",
+  "description": "Memadukan Analogi Kapasitas Listrik Rumah (Sekring Jepret saat Menyalakan AC & Oven Bersamaan) dan Analogi Kost-kostan 5 Kamar dengan bedah OOM Killer Linux (Exit Code 137), kompilasi Next.js Standalone, parameter memori internal PostgreSQL pgvector, serta kebijakan eviksi Redis.",
+  "requestFramePermissions": []
+}
