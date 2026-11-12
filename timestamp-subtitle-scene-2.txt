@@ -1,0 +1,32 @@
+00:00.670 --> 00:04.280
+Lalu, bagaimana arsitektur yang benar untuk VPS 4 GB RAM?
+
+00:05.150 --> 00:07.450
+Rahasianya adalah
+
+00:07.450 --> 00:10.900
+memisahkan beban komputasi model AI dari beban orkestrasi data.
+
+00:11.800 --> 00:15.150
+Kita keluarkan proses pembuatan vektor embedding dan penalaran LLM
+
+00:15.150 --> 00:18.250
+dari dalam VPS menuju layanan API Gateway eksternal.
+
+00:19.400 --> 00:23.000
+Dengan begitu, seluruh kapasitas CPU dan memori di VPS kita
+
+00:23.000 --> 00:27.750
+bisa difokuskan 100% untuk menjalankan 5 kontainer microservice secara terisolasi.
+
+00:28.450 --> 00:30.200
+Mulai dari reverse proxy,
+
+00:30.200 --> 00:31.950
+antarmuka Next.js,
+
+00:31.950 --> 00:33.850
+orkestrator Express.js,
+
+00:33.850 --> 00:36.950
+memori Redis, hingga database PostgreSQL pgvector.

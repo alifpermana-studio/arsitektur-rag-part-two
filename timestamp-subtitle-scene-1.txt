@@ -1,0 +1,41 @@
+00:00.080 --> 00:01.760
+Banyak developer mengira
+
+00:01.760 --> 00:03.960
+bahwa membangun sistem microservice RAG
+
+00:03.960 --> 00:06.360
+butuh sewa server cloud puluhan juta rupiah.
+
+00:07.300 --> 00:11.660
+Padahal, VPS Linux murah berkapasitas 4 GB RAM dan 2 vCPU
+
+00:11.660 --> 00:14.480
+sudah sangat tangguh kalau kamu tahu cara mengatur anggarannya.
+
+00:15.480 --> 00:18.360
+Kesalahan paling fatal yang bikin server 4 giga langsung lumpuh
+
+00:18.360 --> 00:21.720
+adalah memaksakan model embedding lokal jalan satu atap dengan database.
+
+00:22.100 --> 00:23.240
+Bayangkan,
+
+00:23.400 --> 00:27.320
+menyalakan AC, oven, dan setrika bersamaan di rumah berdaya listrik kecil.
+
+00:27.600 --> 00:29.480
+Sekring pasti langsung jepret.
+
+00:30.400 --> 00:34.360
+Model seperti BGE-M3 itu merampas 2,2 GB RAM sendirian.
+
+00:35.400 --> 00:37.360
+Begitu PostgreSQL mulai merakit indeks vektor,
+
+00:37.360 --> 00:39.380
+RAM langsung tembus 100%,
+
+00:39.380 --> 00:44.720
+dan fitur OOM Killer di Linux akan menembak mati database-mu dengan pesan horor: Exit Code 137.

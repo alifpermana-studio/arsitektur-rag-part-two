@@ -1,0 +1,29 @@
+00:00.340 --> 00:03.940
+Mari kita buktikan hasilnya lewat perintah docker stats di terminal.
+
+00:05.150 --> 00:07.700
+Kelima container microservice RAG kita menyala bersamaan
+
+00:07.900 --> 00:12.300
+dengan konsumsi memori saat diam hanya di kisaran 700 MB,
+
+00:13.100 --> 00:18.000
+dan saat digempur beban kerja penuh, tetap terkunci aman di bawah 2,8 GB
+
+00:18.300 --> 00:20.900
+tanpa menyentuh zona bahaya OOM Killer.
+
+00:22.100 --> 00:25.000
+Sekarang, setelah rumah infrastrukturnya berdiri kokoh,
+
+00:25.300 --> 00:28.300
+bagaimana cara kita merancang isi di dalam PostgreSQL,
+
+00:28.800 --> 00:33.400
+agar sanggup mencari jutaan potongan teks dan metadata dalam hitungan milidetik?
+
+00:34.400 --> 00:37.500
+Di bagian ketiga, kita akan bedah desain database hibrida
+
+00:37.600 --> 00:41.380
+yang mengawinkan indeks vektor HNSW dengan indeks metadata JSONB.

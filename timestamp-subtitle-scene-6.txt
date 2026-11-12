@@ -1,0 +1,35 @@
+00:00.580 --> 00:03.650
+Selanjutnya, kita jinakkan kontainer Redis yang memikul tugas ganda
+
+00:03.750 --> 00:06.680
+di batas memori 384 MB.
+
+00:07.400 --> 00:10.950
+Database 0 dipakai untuk antrean ekstraksi dokumen BullMQ,
+
+00:11.150 --> 00:14.700
+sedangkan database 1 dipakai untuk menyimpan semantic cache jawaban AI.
+
+00:15.600 --> 00:17.850
+Apa jadinya kalau memori Redis penuh?
+
+00:18.550 --> 00:21.050
+Kalau kita salah memilih kebijakan penghapusan memori,
+
+00:21.150 --> 00:25.000
+Redis bisa membuang antrean dokumen pelanggan yang sedang diproses.
+
+00:25.750 --> 00:30.400
+Karena itu, kita jalankan Redis dengan batas maxmemory 256 MB
+
+00:30.600 --> 00:32.800
+dan kebijakan volatile-lru.
+
+00:33.300 --> 00:39.200
+Dengan aturan ini, saat memori penuh, Redis hanya akan menghapus data cache lama yang punya batas waktu kedaluwarsa,
+
+00:39.450 --> 00:42.300
+sementara antrean BullMQ yang tidak punya waktu kedaluwarsa
+
+00:42.450 --> 00:44.250
+tetap aman 100%.

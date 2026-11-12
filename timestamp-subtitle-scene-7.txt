@@ -1,0 +1,32 @@
+00:00.120 --> 00:04.550
+Dua detail terakhir di Docker Compose ini sering menjadi penyelamat di server produksi.
+
+00:04.850 --> 00:05.600
+Pertama,
+
+00:06.000 --> 00:11.500
+jangan pernah menulis pemetaan port database hanya dengan angka 5432:5432,
+
+00:11.900 --> 00:16.450
+karena Docker akan membelokkan aturan iptables dan membuka database-mu ke internet publik
+
+00:16.550 --> 00:18.850
+meskipun firewall UFW sudah menyala.
+
+00:19.350 --> 00:22.850
+Selalu ikat ke alamat lokal 127.0.0.1,
+
+00:23.000 --> 00:26.150
+agar database hanya bisa diakses dari dalam VPS.
+
+00:26.600 --> 00:27.350
+Kedua,
+
+00:27.550 --> 00:31.750
+pasang fitur healthcheck menggunakan pg_isready dan redis-cli ping,
+
+00:32.050 --> 00:35.050
+sehingga kontainer Express.js kita baru akan dinyalakan
+
+00:35.150 --> 00:38.850
+setelah database dan Redis benar-benar sehat dan siap menerima sambungan.

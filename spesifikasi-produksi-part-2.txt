@@ -1,0 +1,115 @@
+================================================================================
+SPESIFIKASI PRODUKSI VIDEO TIKTOK (FORMAT VERTIKAL 9:16)
+Judul Proyek : Bedah Topologi Docker & Budgeting RAM 4 GB Tanpa OOMKilled (Part 2)
+Format       : 8 Cut Scenes
+================================================================================
+
+### Cut Scene 1 (alifpermana.studio)
+
+Judul Proyek: Bedah Topologi Docker dan Budgeting RAM — Menjalankan 5 Layanan RAG di VPS 4 GB Tanpa Out of Memory (Bagian 2 dari 10 Seri Masterclass Arsitektur RAG).
+
+Pendekatan Materi: Memadukan Analogi Kapasitas Listrik Rumah (Sekring Jepret saat Menyalakan AC & Oven Bersamaan) dan Analogi Kost-kostan 5 Kamar dengan bedah OOM Killer Linux (Exit Code 137), kompilasi Next.js Standalone, parameter memori internal PostgreSQL pgvector, serta kebijakan eviksi Redis.
+
+Tujuan Komunikasi: Menarik perhatian penonton dengan membongkar kesalahan paling fatal developer saat membangun sistem RAG di VPS 4 GB RAM, yaitu memaksakan model embedding lokal berjalan satu atap dengan database vektor hingga memicu OOM Killer.
+
+Spesifikasi Visual: Bagian atas menampilkan layar terminal htop di VPS 4 GB RAM yang mendadak merah menyala (RAM 3.98/4.00 GB) diikuti pesan horor `Killed (Exit Code 137)` pada kontainer PostgreSQL. Bagian bawah menampilkan penyebabnya lewat analogi sekring rumah jepret: model embedding lokal BAAI/bge-m3 merampas 2,2 GB RAM sendirian di saat PostgreSQL sedang butuh memori besar untuk merakit grafik indeks vektor HNSW, sehingga kernel Linux terpaksa menembak mati database.
+
+Teks Layar (Hook): "Bikin Sistem RAG di VPS 4 GB RAM Tapi Database Mati Terus (Exit Code 137)? Ini Biang Keroknya!"
+
+---
+
+### Cut Scene 2 (azurewot)
+
+Judul Proyek: Bedah Topologi Docker dan Budgeting RAM — Menjalankan 5 Layanan RAG di VPS 4 GB Tanpa Out of Memory (Bagian 2 dari 10 Seri Masterclass Arsitektur RAG).
+
+Pendekatan Materi: Memadukan Analogi Kapasitas Listrik Rumah (Sekring Jepret saat Menyalakan AC & Oven Bersamaan) dan Analogi Kost-kostan 5 Kamar dengan bedah OOM Killer Linux (Exit Code 137), kompilasi Next.js Standalone, parameter memori internal PostgreSQL pgvector, serta kebijakan eviksi Redis.
+
+Tujuan Komunikasi: Menjelaskan solusi arsitektural untuk VPS berkapasitas terbatas, yaitu memisahkan beban komputasi model AI ke API Gateway eksternal dan memfokuskan VPS 4 GB khusus untuk mengorkestrasi 5 kontainer mikroservis data.
+
+Spesifikasi Visual: Diagram arsitektur vertikal yang membelah beban kerja. Di sisi dalam kotak VPS 4 GB RAM (2 vCPU) berjejer rapi 5 kontainer ringan: Reverse Proxy, Next.js UI, Express.js API & Worker, Redis Cache & Queue, serta PostgreSQL pgvector. Di luar kotak VPS terdapat jalur koneksi cepat menuju AI API Gateway (seperti 9Router) yang menangani komputasi berat model embedding BGE-M3, Contextualizer GLM-4-Flash, dan Reasoning Claude 3.5 Sonnet.
+
+Teks Layar: "Solusi Arsitektur: Lempar Beban Komputasi Model ke API Gateway, Fokuskan VPS untuk Orkestrasi Data!"
+
+---
+
+### Cut Scene 3 (azurestudio.backup)
+
+Judul Proyek: Bedah Topologi Docker dan Budgeting RAM — Menjalankan 5 Layanan RAG di VPS 4 GB Tanpa Out of Memory (Bagian 2 dari 10 Seri Masterclass Arsitektur RAG).
+
+Pendekatan Materi: Memadukan Analogi Kapasitas Listrik Rumah (Sekring Jepret saat Menyalakan AC & Oven Bersamaan) dan Analogi Kost-kostan 5 Kamar dengan bedah OOM Killer Linux (Exit Code 137), kompilasi Next.js Standalone, parameter memori internal PostgreSQL pgvector, serta kebijakan eviksi Redis.
+
+Tujuan Komunikasi: Membedah tabel pembagian anggaran vCPU dan batas maksimal RAM (Hard Limit) untuk kelima kontainer Docker agar total pemakaian terkunci di 2880 MB dan menyisakan 1,1 GB untuk sistem operasi Linux.
+
+Spesifikasi Visual: Layar atas menampilkan grafik batang horizontal kapasitas RAM 4096 MB yang dibagi menjadi 5 kamar kontainer dengan segel gembok `deploy.resources.limits`: Reverse Proxy (64 MB), Next.js (384 MB), Redis (384 MB), Express.js (512 MB), dan PostgreSQL pgvector (1536 MB). Layar bawah menyorot area hijau sisa RAM sebesar 1,1 GB yang wajib disisakan untuk sistem operasi Ubuntu Linux, overhead jaringan Docker, dan OS Page Cache agar server tidak membeku.
+
+Teks Layar: "Rumus Budgeting RAM 4 GB: Kunci 5 Kontainer di 2.880 MB, Sisakan 1,1 GB untuk Napas OS Linux!"
+
+---
+
+### Cut Scene 4 (azurestudio.backup1)
+
+Judul Proyek: Bedah Topologi Docker dan Budgeting RAM — Menjalankan 5 Layanan RAG di VPS 4 GB Tanpa Out of Memory (Bagian 2 dari 10 Seri Masterclass Arsitektur RAG).
+
+Pendekatan Materi: Memadukan Analogi Kapasitas Listrik Rumah (Sekring Jepret saat Menyalakan AC & Oven Bersamaan) dan Analogi Kost-kostan 5 Kamar dengan bedah OOM Killer Linux (Exit Code 137), kompilasi Next.js Standalone, parameter memori internal PostgreSQL pgvector, serta kebijakan eviksi Redis.
+
+Tujuan Komunikasi: Membongkar cara menjinakkan konsumsi memori pada kontainer aplikasi Node.js (Next.js dan Express.js) menggunakan fitur kompilasi Standalone dan isolasi konkurensi Worker.
+
+Spesifikasi Visual: Komparasi ukuran dan konsumsi RAM kontainer Next.js di layar atas: Dockerfile biasa yang membawa seluruh folder `node_modules` membengkak hingga 1,2 GB image dan memakan 600 MB RAM, melawan konfigurasi `output: 'standalone'` pada `next.config.js` yang memangkas konsumsi RAM menjadi 140 MB saat idle (aman di bawah limit 384 MB). Layar bawah menampilkan kontainer Express.js (limit 512 MB) yang membatasi antrean ekstraksi PDF maksimal 2 dokumen bersamaan agar Garbage Collector V8 tidak meledak.
+
+Teks Layar: "Diet Ketat Kontainer Node.js: Wajib Aktifkan Next.js Standalone & Batasi Konkurensi Express.js!"
+
+---
+
+### Cut Scene 5 (azurestudio.backup2)
+
+Judul Proyek: Bedah Topologi Docker dan Budgeting RAM — Menjalankan 5 Layanan RAG di VPS 4 GB Tanpa Out of Memory (Bagian 2 dari 10 Seri Masterclass Arsitektur RAG).
+
+Pendekatan Materi: Memadukan Analogi Kapasitas Listrik Rumah (Sekring Jepret saat Menyalakan AC & Oven Bersamaan) dan Analogi Kost-kostan 5 Kamar dengan bedah OOM Killer Linux (Exit Code 137), kompilasi Next.js Standalone, parameter memori internal PostgreSQL pgvector, serta kebijakan eviksi Redis.
+
+Tujuan Komunikasi: Menjelaskan bahwa memasang batas memori Docker saja tidak cukup untuk PostgreSQL; kita harus menyetel parameter memori internal database agar selaras dengan batas kontainer 1536 MB.
+
+Spesifikasi Visual: Cuplikan kode `docker-compose.yml` pada layanan `rag-postgres` yang menyorot baris command flag PostgreSQL. Di bawahnya muncul ilustrasi mekanisme memori internal database: `shared_buffers=384MB` (25% dari limit kontainer untuk menyimpan blok indeks yang sering diakses), `work_mem=16MB` (memori per operasi pengurutan vektor), `maintenance_work_mem=128MB` (pagar pengaman saat merakit grafik indeks HNSW), dan `max_connections=50`.
+
+Teks Layar: "Jangan Biarkan PostgreSQL Buta Kapasitas! Setel shared_buffers=384MB & maintenance_work_mem=128MB"
+
+---
+
+### Cut Scene 6 (alifpustaka.assist)
+
+Judul Proyek: Bedah Topologi Docker dan Budgeting RAM — Menjalankan 5 Layanan RAG di VPS 4 GB Tanpa Out of Memory (Bagian 2 dari 10 Seri Masterclass Arsitektur RAG).
+
+Pendekatan Materi: Memadukan Analogi Kapasitas Listrik Rumah (Sekring Jepret saat Menyalakan AC & Oven Bersamaan) dan Analogi Kost-kostan 5 Kamar dengan bedah OOM Killer Linux (Exit Code 137), kompilasi Next.js Standalone, parameter memori internal PostgreSQL pgvector, serta kebijakan eviksi Redis.
+
+Tujuan Komunikasi: Mengungkap trik konfigurasi Redis yang menjalankan peran ganda (Antrean BullMQ di DB 0 dan Semantic Cache di DB 1) agar saat memori penuh, Redis tidak menghapus antrean dokumen yang sedang diproses.
+
+Spesifikasi Visual: Ilustrasi kontainer `rag-redis` (limit 384 MB) dengan perintah `--maxmemory 256mb --maxmemory-policy volatile-lru`. Layar bawah memvisualisasikan cara kerja kebijakan `volatile-lru`: saat memori 256 MB penuh, petugas Redis hanya membuang data Semantic Cache di DB 1 yang memiliki label waktu kedaluwarsa (TTL), sementara data antrean pekerjaan BullMQ di DB 0 yang bersifat permanen (tanpa TTL) tetap terlindungi 100%.
+
+Teks Layar: "Rahasia Redis Peran Ganda: Pakai Kebijakan volatile-lru Agar Antrean BullMQ Tidak Ikut Terhapus!"
+
+---
+
+### Cut Scene 7 (fajarrini915)
+
+Judul Proyek: Bedah Topologi Docker dan Budgeting RAM — Menjalankan 5 Layanan RAG di VPS 4 GB Tanpa Out of Memory (Bagian 2 dari 10 Seri Masterclass Arsitektur RAG).
+
+Pendekatan Materi: Memadukan Analogi Kapasitas Listrik Rumah (Sekring Jepret saat Menyalakan AC & Oven Bersamaan) dan Analogi Kost-kostan 5 Kamar dengan bedah OOM Killer Linux (Exit Code 137), kompilasi Next.js Standalone, parameter memori internal PostgreSQL pgvector, serta kebijakan eviksi Redis.
+
+Tujuan Komunikasi: Membongkar celah keamanan jaringan Docker yang sering menembus firewall UFW Linux serta cara mengatur urutan nyala kontainer dengan `healthcheck` agar Express.js tidak crash saat booting.
+
+Spesifikasi Visual: Layar atas menampilkan perbandingan penulisan port di `docker-compose.yml`: penulisan ceroboh `5432:5432` membuka pintu database langsung ke internet publik melewati firewall UFW, sedangkan penulisan aman `127.0.0.1:5432:5432` mengunci akses hanya di jaringan lokal VPS. Layar bawah menampilkan alur `depends_on` dengan `condition: service_healthy` menggunakan `pg_isready` dan `redis-cli ping` sehingga Express.js baru menyala setelah database benar-benar siap menerima koneksi.
+
+Teks Layar: "Awas Jebakan Firewall Docker! Kunci Port di 127.0.0.1 & Pasang Healthcheck Sebelum API Menyala"
+
+---
+
+### Cut Scene 8 (ruhwiyanto278)
+
+Judul Proyek: Bedah Topologi Docker dan Budgeting RAM — Menjalankan 5 Layanan RAG di VPS 4 GB Tanpa Out of Memory (Bagian 2 dari 10 Seri Masterclass Arsitektur RAG).
+
+Pendekatan Materi: Memadukan Analogi Kapasitas Listrik Rumah (Sekring Jepret saat Menyalakan AC & Oven Bersamaan) dan Analogi Kost-kostan 5 Kamar dengan bedah OOM Killer Linux (Exit Code 137), kompilasi Next.js Standalone, parameter memori internal PostgreSQL pgvector, serta kebijakan eviksi Redis.
+
+Tujuan Komunikasi: Menunjukkan bukti eksekusi nyata kelima kontainer di terminal Linux menggunakan `docker stats` sekaligus membuka rasa penasaran penonton menuju Episode 3 tentang desain skema database hibrida.
+
+Spesifikasi Visual: Rekaman layar terminal vertikal yang menjalankan perintah `docker stats`. Kelima kontainer (`rag-postgres`, `rag-redis`, `rag-api`, `rag-web`, dan `proxy`) terlihat berjalan stabil dengan total pemakaian RAM saat idle hanya sekitar 700 MB dan terkunci aman di bawah batas 2,8 GB saat diuji beban. Di bagian bawah muncul pratinjau struktur tabel PostgreSQL yang menggabungkan vektor HNSW 1024 dimensi dengan metadata JSONB sebagai jembatan ke Bagian 3.
+
+Teks Layar: "Terbukti Stabil di Bawah 2,8 GB! Lanjut Part 3: Merancang Skema Database Hibrida pgvector & JSONB!"

@@ -1,0 +1,23 @@
+00:00.680 --> 00:05.150
+Perhatian paling ekstra wajib kita berikan pada container PostgreSQL PG Vector.
+
+00:06.150 --> 00:12.650
+Secara bawaan, PostgreSQL tidak sadar kalau dirinya sedang dikurung di dalam container berbatas 1,5 giga RAM.
+
+00:13.650 --> 00:19.950
+Supaya ia tidak kalap memakai memori, kita suntikkan empat parameter pengaman langsung saat container dinyalakan.
+
+00:20.800 --> 00:24.950
+Kita atur shared_buffers di 384 MB sebagai memori kerja utama,
+
+00:25.300 --> 00:28.450
+work_mem di 16 MB per operasi pencarian,
+
+00:28.800 --> 00:32.900
+dan kita kunci maintenance_work_mem di 128 MB.
+
+00:33.750 --> 00:37.350
+Parameter terakhir ini sangat krusial untuk menahan nafsu PostgreSQL
+
+00:37.350 --> 00:42.200
+saat merakit jaring indeks vektor HNSW agar tidak pernah melampaui batas memori container.

@@ -1,0 +1,67 @@
+================================================================================
+NASKAH VOICEOVER VIDEO TIKTOK (FORMAT VERTIKAL 9:16)
+Judul Proyek : Bedah Topologi Docker & Budgeting RAM 4 GB Tanpa OOMKilled (Part 2)
+Format       : 8 Cut Scenes
+================================================================================
+
+### Cut Scene 1 (alifpermana.studio)
+Teks Layar: "Bikin Sistem RAG di VPS 4 GB RAM Tapi Database Mati Terus (Exit Code 137)? Ini Biang Keroknya!"
+
+Voiceover:
+"Banyak developer mengira bahwa membangun sistem mikroservis RAG butuh sewa server cloud puluhan juta rupiah. Padahal, VPS Linux murah berkapasitas 4 gigabita RAM dan 2 vCPU sudah sangat tangguh kalau kamu tahu cara mengatur anggarannya. Kesalahan paling fatal yang bikin server 4 giga langsung lumpuh adalah memaksakan model embedding lokal jalan satu atap dengan database. Bayangkan menyalakan AC, oven, dan setrika bersamaan di rumah berdaya listrik kecil; sekring pasti langsung jepret. Model seperti BGE-M3 itu merampas 2,2 giga RAM sendirian. Begitu PostgreSQL mulai merakit indeks vektor, RAM langsung tembus 100 persen dan fitur OOM Killer di Linux akan menembak mati database-mu dengan pesan horor Exit Code 137."
+
+---
+
+### Cut Scene 2 (azurewot)
+Teks Layar: "Solusi Arsitektur: Lempar Beban Komputasi Model ke API Gateway, Fokuskan VPS untuk Orkestrasi Data!"
+
+Voiceover:
+"Lalu bagaimana arsitektur yang benar untuk VPS 4 giga RAM? Rahasianya adalah memisahkan beban komputasi model AI dari beban orkestrasi data. Kita keluarkan proses pembuatan vektor embedding dan penalaran LLM dari dalam VPS menuju layanan API Gateway eksternal. Dengan begitu, seluruh kapasitas CPU dan memori di VPS kita bisa difokuskan seratus persen untuk menjalankan lima kontainer mikroservis secara terisolasi: mulai dari Reverse Proxy, antarmuka Next.js, orkestrator Express.js, memori Redis, hingga database PostgreSQL pgvector."
+
+---
+
+### Cut Scene 3 (azurestudio.backup)
+Teks Layar: "Rumus Budgeting RAM 4 GB: Kunci 5 Kontainer di 2.880 MB, Sisakan 1,1 GB untuk Napas OS Linux!"
+
+Voiceover:
+"Sekarang mari kita bedah rumus pembagian anggaran RAM-nya di dalam berkas docker-compose. Ibarat membagi jatah listrik di lima kamar kost, setiap kontainer wajib kita pasang gembok batas maksimal memori. Kita alokasikan 64 megabita untuk Reverse Proxy, 384 megabita untuk Next.js, 384 megabita untuk Redis, 512 megabita untuk Express.js beserta worker-nya, dan porsi terbesar 1.536 megabita untuk PostgreSQL pgvector. Kalau dijumlahkan, total batas maksimal kelima kontainer ini terkunci rapat di angka 2.880 megabita. Sisa memori sebesar 1,1 gigabita sengaja kita biarkan bebas sebagai ruang bernapas bagi sistem operasi Linux dan page cache agar server tidak pernah membeku."
+
+---
+
+### Cut Scene 4 (azurestudio.backup1)
+Teks Layar: "Diet Ketat Kontainer Node.js: Wajib Aktifkan Next.js Standalone & Batasi Konkurensi Express.js!"
+
+Voiceover:
+"Tapi memasang gembok memori di Docker saja tidak cukup kalau aplikasi di dalamnya masih boros. Di kontainer Next.js, kalau kamu memaketkan seluruh folder node_modules secara mentah, RAM 384 megabita pasti langsung jebol. Kita wajib mengaktifkan fitur output standalone di konfigurasi Next.js agar Docker hanya menjalankan berkas produksi yang sudah diperas ramping, sehingga saat kondisi diam ia hanya memakan sekitar 140 megabita RAM. Sementara di kontainer Express.js yang punya batas 512 megabita, kita batasi worker agar hanya memproses maksimal dua berkas PDF secara bersamaan supaya memori Node.js tetap stabil."
+
+---
+
+### Cut Scene 5 (azurestudio.backup2)
+Teks Layar: "Jangan Biarkan PostgreSQL Buta Kapasitas! Setel shared_buffers=384MB & maintenance_work_mem=128MB"
+
+Voiceover:
+"Perhatian paling ekstra wajib kita berikan pada kontainer PostgreSQL pgvector. Secara bawaan, PostgreSQL tidak sadar kalau dirinya sedang dikurung di dalam kontainer berbatas 1,5 giga RAM. Supaya ia tidak kalap memakai memori, kita suntikkan empat parameter pengaman langsung saat kontainer dinyalakan. Kita atur shared_buffers di 384 megabita sebagai memori kerja utama, work_mem di 16 megabita per operasi pencarian, dan kita kunci maintenance_work_mem di 128 megabita. Parameter terakhir ini sangat krusial untuk menahan nafsu PostgreSQL saat merakit jaring indeks vektor HNSW agar tidak pernah melampaui batas memori kontainer."
+
+---
+
+### Cut Scene 6 (alifpustaka.assist)
+Teks Layar: "Rahasia Redis Peran Ganda: Pakai Kebijakan volatile-lru Agar Antrean BullMQ Tidak Ikut Terhapus!"
+
+Voiceover:
+"Selanjutnya kita jinakkan kontainer Redis yang memikul tugas ganda di batas memori 384 megabita: Database 0 dipakai untuk antrean ekstraksi dokumen BullMQ, sedangkan Database 1 dipakai untuk menyimpan Semantic Cache jawaban AI. Apa jadinya kalau memori Redis penuh? Kalau kita salah memilih kebijakan penghapusan memori, Redis bisa membuang antrean dokumen pelanggan yang sedang diproses! Karena itu, kita jalankan Redis dengan batas maxmemory 256 megabita dan kebijakan volatile-lru. Dengan aturan ini, saat memori penuh, Redis hanya akan menghapus data cache lama yang punya batas waktu kedaluwarsa, sementara antrean BullMQ yang tidak punya waktu kedaluwarsa tetap aman seratus persen."
+
+---
+
+### Cut Scene 7 (fajarrini915)
+Teks Layar: "Awas Jebakan Firewall Docker! Kunci Port di 127.0.0.1 & Pasang Healthcheck Sebelum API Menyala"
+
+Voiceover:
+"Dua detail terakhir di docker-compose ini sering menjadi penyelamat di server produksi. Pertama, jangan pernah menulis pemetaan port database hanya dengan angka 5432:5432, karena Docker akan membelokkan aturan iptables dan membuka database-mu ke internet publik meskipun firewall UFW sudah menyala. Selalu ikat ke alamat lokal 127.0.0.1 agar database hanya bisa diakses dari dalam VPS. Kedua, pasang fitur healthcheck menggunakan pg_isready dan redis-cli ping, sehingga kontainer Express.js kita baru akan dinyalakan setelah database dan Redis benar-benar sehat dan siap menerima sambungan."
+
+---
+
+### Cut Scene 8 (ruhwiyanto278)
+Teks Layar: "Terbukti Stabil di Bawah 2,8 GB! Lanjut Part 3: Merancang Skema Database Hibrida pgvector & JSONB!"
+
+Voiceover:
+"Mari kita buktikan hasilnya lewat perintah docker stats di terminal. Kelima kontainer mikroservis RAG kita menyala bersamaan dengan konsumsi memori saat diam hanya di kisaran 700 megabita, dan saat digempur beban kerja penuh tetap terkunci aman di bawah 2,8 gigabita tanpa menyentuh zona bahaya OOM Killer. Sekarang setelah rumah infrastrukturnya berdiri kokoh, bagaimana cara kita merancang isi di dalam PostgreSQL agar sanggup mencari jutaan potongan teks dan metadata dalam hitungan milidetik? Di bagian ketiga, kita akan bedah desain database hibrida yang mengawinkan indeks vektor HNSW dengan indeks metadata JSONB."
