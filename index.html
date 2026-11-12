@@ -468,10 +468,9 @@ function measureKWeightedLufs(samples, sr, isSparseSfx = false) {
     kw[i] = y0;
   }
 
-  // Untuk SFX (transien pendek 40-150ms di tengah keheningan), gunakan jendela transien aktif (30ms)
-  // agar energi tidak terdilusi oleh 350ms keheningan di dalam blok 400ms yang memicu over-boost +15 dB.
-  const winSec = isSparseSfx ? 0.03 : 0.4;
-  const stepSec = isSparseSfx ? 0.01 : 0.1;
+  // Titik 75% antara jendela transien 30ms dan jendela 400ms awal -> 300ms (0.30s)
+  const winSec = isSparseSfx ? 0.30 : 0.4;
+  const stepSec = isSparseSfx ? 0.075 : 0.1;
   const blockLen = Math.max(1, Math.round(winSec * sr));
   const stepLen = Math.max(1, Math.round(stepSec * sr));
   const blockEnergies = [];
@@ -492,10 +491,9 @@ function measureKWeightedLufs(samples, sr, isSparseSfx = false) {
   if (absPassed.length === 0) return -70;
 
   if (isSparseSfx) {
-    // Untuk SFX transien, ukur dari puncak blok aktif teratas (top 15% active hits)
-    // agar bunyi klik/tap kecil tidak memaksa gain seluruh track terdorong ke 0 dBTP
+    // Titik 75% antara top 15% blok aktif dan seluruh blok relative-gate -> top 78% blok aktif
     const sorted = [...absPassed].sort((a, b) => b - a);
-    const topCount = Math.max(1, Math.ceil(sorted.length * 0.15));
+    const topCount = Math.max(1, Math.ceil(sorted.length * 0.78));
     let sumTop = 0;
     for (let i = 0; i < topCount; i++) sumTop += sorted[i];
     const meanTop = sumTop / topCount;
@@ -554,20 +552,31 @@ function normalizeAudioBufferToLufs(audioBuf, targetLufs, targetDbTP = 0.0, isSp
     if (curLufs <= -65) continue;
 
     let gain = Math.pow(10, (targetLufs - curLufs) / 20);
-
-    if (isSparseSfx) {
-      // Pertahankan dinamika internal antar-SFX (agar bunyi tap kecil tetap lembut di belakang VO)
-      // dan batasi penguatan maksimum agar tidak mendorong noise/klik ke 0 dBTP
-      gain = Math.min(gain, 1.15);
-      for (let i = 0; i < len; i++) {
-        data[i] = orig[i] * gain;
-      }
-      clampLocalTruePeaks(data, maxTpLinear);
-      continue;
-    }
-
     const knee = 0.84;
     const span = Math.max(0.02, maxTpLinear - knee);
+
+    if (isSparseSfx) {
+      // Titik 75% antara batas gain 1.15x (0%) dan penguatan awal ~3.35x (100%) -> 2.80x (+8.94 dB)
+      // dengan 4 iterasi soft-knee agar SFX lebih bertenaga namun tetap menjaga ruang bagi Voiceover
+      gain = Math.min(gain, 2.80);
+      for (let iter = 0; iter < 4; iter++) {
+        for (let i = 0; i < len; i++) {
+          let v = orig[i] * gain;
+          const av = Math.abs(v);
+          if (av > knee) {
+            const sign = v < 0 ? -1 : 1;
+            v = sign * (knee + span * Math.tanh((av - knee) / span));
+          }
+          data[i] = v;
+        }
+        clampLocalTruePeaks(data, maxTpLinear);
+        const newLufs = measureKWeightedLufs(data, sr, true);
+        const diff = targetLufs - newLufs;
+        if (Math.abs(diff) <= 0.08) break;
+        gain = Math.min(2.80, gain * Math.pow(10, (diff * 0.75) / 20));
+      }
+      continue;
+    }
 
     for (let iter = 0; iter < 5; iter++) {
       for (let i = 0; i < len; i++) {
@@ -720,13 +729,12 @@ function ensureAudioCtx() {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
     gV = ctx.createGain();
     gS = ctx.createGain();
-    // Vocal-pocket EQ pada jalur SFX: meredam pita artikulasi vokal (2.2 kHz, -5 dB)
-    // agar gelombang sintetis SFX tidak menutupi kejelasan konsonan Voiceover
+    // Vocal-pocket EQ titik 75%: -1.25 dB pada 2.2 kHz (antara 0 dB awal dan -5 dB pada posisi 0%)
     sfxEq = ctx.createBiquadFilter();
     sfxEq.type = 'peaking';
     sfxEq.frequency.value = 2200;
     sfxEq.Q.value = 0.9;
-    sfxEq.gain.value = -5.0;
+    sfxEq.gain.value = -1.25;
 
     limV = createZeroDbTpLimiter(ctx);
     limS = createZeroDbTpLimiter(ctx);

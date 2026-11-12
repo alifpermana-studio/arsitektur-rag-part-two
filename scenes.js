@@ -271,45 +271,44 @@ function createScene1(cv) {
   function nz(x,o,t,d,f0,f1,g,ty){const s=x.createBufferSource();s.buffer=NB(x);const f=x.createBiquadFilter();f.type=ty||'bandpass';f.frequency.setValueAtTime(f0,t);f.frequency.exponentialRampToValueAtTime(f1,t+d);s.connect(f);f.connect(env(x,o,t,d*.3,d,g));s.start(t);s.stop(t+d+.05)}
   function ev(x,o,t,k,a){const O=(ty,f0,f1,d,g,dt)=>osc(x,o,t+(dt||0),ty,f0,f1,d,g),N=(d,f0,f1,g,ty,dt)=>nz(x,o,t+(dt||0),d,f0,f1,g,ty);
   switch(k){
-  case'wh':N(.45,280,2200,.32);break;
-  case'wave':N(.55,240,1900,.35,'lowpass');break;
-  case'swipe':N(.28,4200,900,.32);break;
-  case'ting':O('sine',1320,1315,.22,.08);break;
-  case'pop':O('sine',520*Math.pow(1.05,a||0),840*Math.pow(1.05,a||0),.12,.16);break;
+  case'wh':N(.5,300,3200,.5);break;
+  case'wave':N(.6,250,2400,.55,'lowpass');break;
+  case'swipe':N(.3,6000,900,.5);break;
+  case'ting':O('sine',1760,1750,.3,.12);break;
+  case'pop':O('sine',600*Math.pow(1.06,a),1080*Math.pow(1.06,a),.16,.3);break;
   case'type':O('sine',680,920,.14,.12);break;
-  case'slash':O('sine',150,65,.18,.22);break;
-  case'ding':O('sine',1046.5,1045,.45,.14);break;
-  case'blip':O('triangle',500*Math.pow(2,a/12),520*Math.pow(2,a/12),.12,.18);break;
-  case'knock':O('sine',220,90,.14,.45);N(.08,900,200,.22,'lowpass');break;
-  case'th':O('sine',140,40,.28,.55);N(.18,800,200,.28,'lowpass');break;
-  case'slam':O('sine',90,30,.45,.75);N(.3,500,100,.5,'lowpass');break;
-  case'crack':for(let j=0;j<3;j++)N(.04,4200,2200,.25,'highpass',j*.08);break;
-  case'hum':O('sine',100,100.5,.6,.22);O('sine',200,200.5,.6,.08);break;
-  case'hiss':N(.5,3800,3400,.2,'highpass');break;
-  case'click':O('sine',1400,1200,.04,.12);break;
-  case'clack':O('triangle',800,450,.06,.18);N(.05,1800,500,.14);break;
-  case'zap':O('triangle',1400,80,.24,.2);N(.2,1800,300,.28);break;
-  case'err':O('sawtooth',110,108,.45,.14);O('sawtooth',117,115,.45,.14);break;
-  case'rise':N(1.2,380,2200,.22);break;
-  case'alarm':for(let j=0;j<4;j++)O('triangle',j%2?660:880,j%2?655:875,.14,.11,j*.22);break;
-  case'lock':for(let j=0;j<2;j++)O('sine',1200,1200.5,.06,.15,j*.14);O('sine',1200,1200.5,.3,.16,.32);break;
-  case'power':O('sine',180,780,.4,.22);N(.25,200,1600,.18);break;
-  case'tk':O('sine',1200*(1+a*.04),1200*(1+a*.04)+1,.035,.12);break;
-  case'tap':O('sine',760,480,.05,.06);break;
-  case'chime':[523,659,784,1047].forEach((f,j)=>O('sine',f,f*.999,1.2,.15,j*.08))}}
+  case'slash':N(.25,3000,9000,.5,'highpass');O('sine',160,50,.25,.5);break;
+  case'ding':O('sine',1320,1318,.7,.25);O('sine',1980,1978,.5,.1);break;
+  case'blip':O('triangle',500*Math.pow(2,a/12),520*Math.pow(2,a/12),.12,.22);break;
+  case'knock':O('sine',220,90,.14,.6);N(.08,900,200,.3,'lowpass');break;
+  case'th':O('sine',140,40,.3,.8);N(.2,800,200,.4,'lowpass');break;
+  case'slam':O('sine',90,30,.5,1);N(.35,500,100,.7,'lowpass');N(.2,3000,600,.3);break;
+  case'crack':for(let j=0;j<4;j++)N(.05,5000,2500,.35,'highpass',j*.07+(j%2)*.03);break;
+  case'hum':O('sine',100,100.5,.7,.3);O('sine',200,200.5,.7,.12);O('square',1200,1200.5,.08,.08,.5);break;
+  case'hiss':N(.7,4500,4200,.3,'highpass');break;
+  case'click':O('square',1800,1700,.05,.18);break;
+  case'clack':O('square',900,500,.07,.25);N(.06,2000,500,.2);break;
+  case'zap':O('sawtooth',1800,60,.28,.25);N(.25,2000,300,.4);break;
+  case'err':O('sawtooth',110,108,.5,.18);O('sawtooth',117,115,.5,.18);break;
+  case'rise':N(1.4,400,2600,.3);break;
+  case'alarm':for(let j=0;j<6;j++)O('square',j%2?660:880,j%2?655:875,.15,.13,j*.2);break;
+  case'lock':for(let j=0;j<3;j++)O('sine',1400,1400.5,.06,.2,j*.13);O('sine',1400,1400.5,.35,.22,.42);break;
+  case'power':O('sine',180,900,.45,.3);N(.3,200,2000,.25);break;
+  case'tk':O('sine',1500*(1+a*.05),1500*(1+a*.05)+1,.04,.2);break;
+  case'tap':O('sine',900,500,.07,.1);break;
+  case'chime':[523,659,784,1047].forEach((f,j)=>O('sine',f,f*.999,1.4,.2,j*.07))}}
   function mkSfx(){const A=(t,k,a)=>SFX.push([t,k,a]),Q=(k,i)=>B[i]+MK[k]*DLS[i]+.08;
-  [['wh',1],['wave',2],['swipe',3],['wh',4],['wave',5]].forEach(([k,i])=>{A(B[i]-.02,k)});
+  [['wh',1],['wave',2],['swipe',3],['wh',4],['wave',5]].forEach(([k,i])=>{A(B[i]-.02,k);A(B[i]+.48,'ting')});
   [1,2,3,4].forEach(i=>A(B[i]+.35,'pop',i*2));
-  // Intro Scene 1 ("Bikin Sistem RAG di VPS 4 GB..."): satu efek pop lembut saat judul muncul, tanpa rentetan beep
+  // Satu aksen soft sine pop tunggal saat judul muncul (tanpa rentetan 6x7 square-wave beep)
   A(B[0]+DLS[0],'type');
-  A(Q('s1vps',0),'pop',3);A(Q('s1chk',0),'ding');
-  A(Q('s2roof',1),'th');for(let k=0;k<5;k++){A(Q('s2room'+k,1),'knock')}
+  A(Q('s1strike',0),'slash');A(Q('s1vps',0),'pop',5);A(Q('s1chk',0),'ding');
+  A(Q('s2roof',1),'th');for(let k=0;k<5;k++){A(Q('s2room'+k,1),'knock');A(Q('s2room'+k,1)+.16,'pop',k*2)}
   A(Q('s3blk',2),'slam');A(Q('s3crack',2),'crack');for(let j=0;j<3;j++)A(Q('s3push',2)+j*.12,'knock');
-  A(Q('s4ac',3),'hum');A(Q('s4oven',3),'ding');A(Q('s4iron',3),'hiss');A(Q('s4box',3),'click');A(Q('s4sw2',3),'clack');A(Q('s4spark',3),'zap');
-  A(B[4]+.3,'rise');for(let t=3.2;t<6.5;t+=.18)A(B[4]+t,'tk',(t-3.2)/3.3*8);A(B[4]+6.5,'alarm');A(Q('s5panel',4),'th');
-  for(let j=0;j<22;j+=2)A(Q('s5nodes',4)+j*DLS[4],'blip',[0,2,4,7,9][j%5]+(j/5|0)*2);
-  A(Q('s6term',5),'power');SH=Q('s6kill',5)-B[5];A(B[5]+SH,'th');A(B[5]+SH,'alarm');A(Q('s6ret',5),'lock');A(Q('s6amb',5),'ding');A(43.4,'chime');
-  CUES.forEach((ch,idx)=>{if(idx>0)A(ch[0]+.02,'tap')})}
+  A(Q('s4ac',3),'hum');A(Q('s4oven',3),'ding');A(Q('s4iron',3),'hiss');A(Q('s4box',3),'click');A(Q('s4sw0',3),'click');A(Q('s4sw1',3),'click');A(Q('s4sw2',3),'clack');A(Q('s4spark',3),'zap');A(Q('s4spark',3)+.05,'err');
+  A(B[4]+.3,'rise');A(B[4]+3.2,'rise');for(let t=3.2;t<6.5;t+=.09)A(B[4]+t,'tk',(t-3.2)/3.3*10);A(B[4]+6.5,'alarm');A(Q('s5panel',4),'th');
+  for(let j=0;j<22;j++)A(Q('s5nodes',4)+j*DLS[4],'blip',[0,2,4,7,9][j%5]+(j/5|0)*2);
+  A(Q('s6term',5),'power');A(Q('s6mem',5),'rise');SH=Q('s6kill',5)-B[5];A(B[5]+SH,'th');A(B[5]+SH,'alarm');A(B[5]+SH+.05,'err');A(Q('s6ret',5),'lock');A(Q('s6amb',5),'ding');A(43.4,'chime');CUES.forEach(ch=>A(ch[0]+.02,'tap'))}
 
   CNTP=true;const sc=document.createElement('canvas').getContext('2d');c=sc;S.forEach((f,i)=>{U=99;ANIM=true;DL=.1;cnt=0;f();DLS[i]=Math.min(.11,(B[i+1]-B[i])*.6/cnt)});CNTP=false;c=X;mkSfx();
 
